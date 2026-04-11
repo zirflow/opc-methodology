@@ -1,0 +1,1851 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OPC 一人企业方法论³</title>
+<style>
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --parchment: #f5f4ed;
+  --ivory: #faf9f5;
+  --white: #ffffff;
+  --sand: #e8e6dc;
+  --near-black: #141413;
+  --dark-surface: #30302e;
+  --terracotta: #c96442;
+  --coral: #d97757;
+  --charcoal: #4d4c48;
+  --olive: #5e5d59;
+  --stone: #87867f;
+  --dark-warm: #3d3d3a;
+  --silver: #b0aea5;
+  --border-cream: #f0eee6;
+  --border-warm: #e8e6dc;
+  --border-dark: #30302e;
+  --ring-warm: #d1cfc5;
+  --ring-deep: #c2c0b6;
+  --serif: Georgia, 'Noto Serif SC', 'Source Han Serif SC', serif;
+  --sans: -apple-system, 'PingFang SC', 'Noto Sans SC', 'Source Han Sans SC', system-ui, sans-serif;
+  --mono: 'SF Mono', 'Fira Code', monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--parchment);
+  color: var(--near-black);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Typography ── */
+h1, h2, h3, h4 { font-family: var(--serif); font-weight: 500; }
+h1 { font-size: 3.2rem; line-height: 1.12; letter-spacing: -0.02em; }
+h2 { font-size: 2.2rem; line-height: 1.2; }
+h3 { font-size: 1.5rem; line-height: 1.25; }
+h4 { font-size: 1.2rem; line-height: 1.3; }
+
+/* ── Layout ── */
+.container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+section { padding: 80px 0; }
+
+/* ── Nav ── */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(245,244,237,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-cream);
+  padding: 14px 0;
+}
+nav .container { display: flex; align-items: center; justify-content: space-between; }
+nav .logo { font-family: var(--serif); font-weight: 500; font-size: 1.2rem; color: var(--near-black); text-decoration: none; }
+nav .logo span { color: var(--terracotta); }
+nav ul { display: flex; gap: 28px; list-style: none; }
+nav a { color: var(--olive); text-decoration: none; font-size: 15px; transition: color .2s; }
+nav a:hover { color: var(--near-black); }
+
+/* ── Hero ── */
+.hero {
+  padding: 100px 0 80px;
+  text-align: center;
+}
+.hero h1 { margin-bottom: 20px; }
+.hero h1 span { color: var(--terracotta); }
+.hero .subtitle {
+  font-size: 1.15rem;
+  color: var(--olive);
+  max-width: 600px;
+  margin: 0 auto 36px;
+  line-height: 1.7;
+}
+.hero .cta-group { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 15px; font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  transition: all .2s;
+}
+.btn-primary {
+  background: var(--terracotta);
+  color: var(--ivory);
+  box-shadow: 0 0 0 1px var(--terracotta);
+}
+.btn-primary:hover { background: var(--coral); box-shadow: 0 0 0 1px var(--coral); }
+.btn-secondary {
+  background: var(--sand);
+  color: var(--charcoal);
+  box-shadow: 0 0 0 1px var(--ring-warm);
+}
+.btn-secondary:hover { box-shadow: 0 0 0 1px var(--ring-deep); }
+.btn-dark {
+  background: var(--dark-surface);
+  color: var(--ivory);
+  box-shadow: 0 0 0 1px var(--border-dark);
+}
+.btn-dark:hover { background: var(--near-black); }
+.btn-ghost {
+  background: transparent;
+  color: var(--olive);
+  box-shadow: 0 0 0 1px var(--border-warm);
+}
+.btn-ghost:hover { color: var(--near-black); box-shadow: 0 0 0 1px var(--ring-deep); }
+.btn-sm { padding: 6px 14px; font-size: 13px; border-radius: 8px; }
+
+/* ── Section Headers ── */
+.section-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+.section-header .overline {
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--terracotta);
+  margin-bottom: 12px;
+}
+.section-header h2 { margin-bottom: 14px; }
+.section-header p { color: var(--olive); max-width: 560px; margin: 0 auto; font-size: 15px; }
+
+/* ── Stage Cards (Methodology) ── */
+.stages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+.stage-card {
+  background: var(--ivory);
+  border: 1px solid var(--border-cream);
+  border-radius: 14px;
+  padding: 28px 24px;
+  transition: box-shadow .25s;
+  position: relative;
+}
+.stage-card:hover {
+  box-shadow: rgba(0,0,0,0.05) 0 4px 24px;
+}
+.stage-card .stage-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--terracotta);
+  color: var(--ivory);
+  font-size: 13px; font-weight: 600;
+  margin-bottom: 14px;
+}
+.stage-card .stage-num.linear { background: var(--terracotta); }
+.stage-card .stage-num.trigger { background: var(--dark-surface); }
+.stage-card h4 { margin-bottom: 8px; }
+.stage-card p { color: var(--olive); font-size: 14px; line-height: 1.6; }
+.stage-card .stage-tag {
+  display: inline-block;
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 6px;
+  margin-top: 12px;
+  font-weight: 500;
+}
+.stage-tag.linear { background: #f3e8e2; color: var(--terracotta); }
+.stage-tag.trigger { background: #e8e7e3; color: var(--olive); }
+
+.stage-flow-note {
+  text-align: center;
+  margin-top: 32px;
+  color: var(--stone);
+  font-size: 14px;
+}
+.stage-flow-note span { color: var(--terracotta); font-weight: 500; }
+
+/* ── Dark Section ── */
+.dark-section {
+  background: var(--near-black);
+  color: var(--ivory);
+}
+.dark-section h2 { color: var(--ivory); }
+.dark-section p { color: var(--silver); }
+.dark-section .overline { color: var(--coral); }
+
+/* ── Chat Section ── */
+.chat-wrapper {
+  background: var(--ivory);
+  border: 1px solid var(--border-cream);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: rgba(0,0,0,0.05) 0 4px 24px;
+}
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-cream);
+  background: var(--ivory);
+}
+.chat-header-left { display: flex; align-items: center; gap: 12px; }
+.chat-header .avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--terracotta);
+  color: var(--ivory);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 600;
+}
+.chat-header .chat-title { font-family: var(--serif); font-weight: 500; font-size: 1rem; }
+.chat-header .chat-subtitle { font-size: 12px; color: var(--stone); }
+
+.chat-body {
+  height: 600px;
+  overflow-y: auto;
+  padding: 24px;
+  scroll-behavior: smooth;
+  background: var(--parchment);
+}
+.chat-body::-webkit-scrollbar { width: 6px; }
+.chat-body::-webkit-scrollbar-track { background: transparent; }
+.chat-body::-webkit-scrollbar-thumb { background: var(--ring-warm); border-radius: 3px; }
+
+/* Stage dividers in chat */
+.chat-stage-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 32px 0 20px;
+  padding: 0;
+}
+.chat-stage-divider:first-child { margin-top: 0; }
+.chat-stage-divider .divider-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--near-black);
+  color: var(--ivory);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 13px; font-weight: 500;
+  white-space: nowrap;
+}
+.chat-stage-divider .divider-badge .num {
+  background: var(--terracotta);
+  color: var(--ivory);
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600;
+}
+.chat-stage-divider::after {
+  content: '';
+  flex: 1;
+  height: 2px;
+  background: var(--terracotta);
+}
+
+/* Chat messages */
+.chat-msg {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  max-width: 85%;
+}
+.chat-msg.ai { align-self: flex-start; }
+.chat-msg.user { margin-left: auto; flex-direction: row-reverse; }
+
+.chat-msg .msg-avatar {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600;
+  margin-top: 2px;
+}
+.chat-msg.ai .msg-avatar { background: var(--terracotta); color: var(--ivory); }
+.chat-msg.user .msg-avatar { background: var(--dark-surface); color: var(--ivory); }
+
+.chat-msg .msg-bubble {
+  padding: 14px 18px;
+  border-radius: 14px;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--near-black);
+}
+.chat-msg.ai .msg-bubble {
+  background: var(--ivory);
+  border: 1px solid var(--border-cream);
+  border-top-left-radius: 4px;
+  color: var(--charcoal);
+}
+.chat-msg.user .msg-bubble {
+  background: var(--sand);
+  border: 1px solid var(--border-warm);
+  border-top-right-radius: 4px;
+  color: var(--charcoal);
+}
+.chat-msg .msg-sender {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--stone);
+  margin-bottom: 4px;
+}
+.chat-msg.ai .msg-sender { color: var(--terracotta); }
+.msg-bubble strong { font-weight: 600; color: var(--near-black); }
+.msg-bubble ul { margin: 8px 0 4px 18px; color: var(--charcoal); }
+.msg-bubble li { margin-bottom: 6px; color: var(--charcoal); }
+.msg-bubble li::marker { color: var(--terracotta); }
+.msg-bubble p + p { margin-top: 10px; }
+
+/* Output badge in chat */
+.msg-output-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 6px 14px;
+  background: rgba(201,100,66,0.08);
+  border: 1px solid rgba(201,100,66,0.18);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--terracotta);
+  cursor: pointer;
+  transition: all .2s;
+  font-weight: 500;
+}
+.msg-output-badge:hover {
+  background: rgba(201,100,66,0.14);
+  border-color: rgba(201,100,66,0.3);
+}
+.msg-output-badge svg { width: 14px; height: 14px; }
+
+/* Chat bottom nav */
+.chat-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 24px;
+  border-top: 1px solid var(--border-cream);
+  background: var(--ivory);
+  flex-wrap: wrap;
+}
+.chat-nav-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  font-size: 12px; font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all .2s;
+  background: var(--sand);
+  color: var(--charcoal);
+  box-shadow: 0 0 0 1px var(--ring-warm);
+}
+.chat-nav-btn:hover { box-shadow: 0 0 0 1px var(--ring-deep); }
+.chat-nav-btn.active {
+  background: var(--terracotta);
+  color: var(--ivory);
+  box-shadow: 0 0 0 1px var(--terracotta);
+}
+.chat-nav-arrow {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all .2s;
+}
+.chat-nav-arrow.prev { background: var(--sand); color: var(--charcoal); }
+.chat-nav-arrow.next { background: var(--terracotta); color: var(--ivory); }
+.chat-nav-arrow:hover { opacity: 0.85; }
+
+/* ── Outputs Section ── */
+.outputs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+.output-card {
+  background: var(--ivory);
+  border: 1px solid var(--border-cream);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: box-shadow .25s;
+  cursor: pointer;
+}
+.output-card:hover { box-shadow: rgba(0,0,0,0.05) 0 4px 24px; }
+.output-card-header {
+  padding: 20px 22px 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.output-card-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 16px;
+}
+.output-card-icon.stage-01 { background: #fce8df; color: var(--terracotta); }
+.output-card-icon.stage-02 { background: #e8f0e8; color: #4a7c59; }
+.output-card-icon.stage-03 { background: #e8eaf0; color: #4a5c7c; }
+.output-card-icon.stage-04 { background: #f0e8f0; color: #7c4a7c; }
+.output-card-icon.stage-06 { background: #f0f0e8; color: #6b6b3f; }
+.output-card-icon.stage-07 { background: #e8f0f0; color: #3f6b6b; }
+.output-card h4 { font-size: 1.05rem; margin-bottom: 4px; }
+.output-card .output-stage-label { font-size: 12px; color: var(--stone); }
+.output-card-body {
+  padding: 0 22px 18px;
+}
+.output-card-body p { font-size: 13.5px; color: var(--olive); line-height: 1.55; }
+.output-card-files {
+  padding: 0 22px 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.output-file-tag {
+  font-size: 11px;
+  padding: 3px 10px;
+  background: var(--parchment);
+  border-radius: 6px;
+  color: var(--stone);
+  font-family: var(--mono);
+}
+
+/* ── Modal / Overlay ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20,20,19,0.55);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.modal-overlay.active { display: flex; }
+.modal {
+  background: var(--ivory);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 760px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: rgba(0,0,0,0.15) 0 20px 60px;
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--border-cream);
+  flex-shrink: 0;
+}
+.modal-header h3 { font-size: 1.2rem; }
+.modal-close {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: var(--sand);
+  color: var(--charcoal);
+  cursor: pointer;
+  font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.modal-close:hover { background: var(--ring-warm); }
+.modal-body {
+  padding: 28px;
+  overflow-y: auto;
+  flex: 1;
+}
+.modal-body::-webkit-scrollbar { width: 6px; }
+.modal-body::-webkit-scrollbar-thumb { background: var(--ring-warm); border-radius: 3px; }
+
+/* Markdown-like rendering in modal */
+.md-content h1 { font-size: 1.5rem; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid var(--terracotta); }
+.md-content h2 { font-size: 1.25rem; margin: 28px 0 12px; color: var(--terracotta); }
+.md-content h3 { font-size: 1.1rem; margin: 20px 0 10px; }
+.md-content p { margin-bottom: 10px; color: var(--olive); font-size: 14.5px; line-height: 1.7; }
+.md-content ul, .md-content ol { margin: 8px 0 12px 20px; color: var(--olive); font-size: 14.5px; }
+.md-content li { margin-bottom: 6px; line-height: 1.6; }
+.md-content strong { color: var(--near-black); }
+.md-content table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; }
+.md-content th { background: var(--parchment); text-align: left; padding: 10px 14px; border: 1px solid var(--border-warm); font-weight: 500; color: var(--charcoal); }
+.md-content td { padding: 10px 14px; border: 1px solid var(--border-cream); color: var(--olive); }
+.md-content hr { border: none; border-top: 1px solid var(--border-warm); margin: 24px 0; }
+
+/* ── Install Section ── */
+.install-block {
+  background: var(--dark-surface);
+  border-radius: 14px;
+  padding: 28px;
+  margin-bottom: 20px;
+}
+.install-block h4 { color: var(--ivory); margin-bottom: 12px; font-size: 1.1rem; }
+.install-block p { color: var(--silver); font-size: 14px; margin-bottom: 14px; }
+.code-block {
+  background: var(--near-black);
+  border-radius: 10px;
+  padding: 16px 20px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--coral);
+  overflow-x: auto;
+  line-height: 1.8;
+  border: 1px solid var(--border-dark);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.code-block .comment { color: var(--stone); }
+.code-block .cmd { color: var(--ivory); }
+
+.skill-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 14px;
+  margin-top: 24px;
+}
+.skill-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(250,249,245,0.06);
+  border: 1px solid var(--border-dark);
+  border-radius: 10px;
+  padding: 14px 18px;
+}
+.skill-item .skill-num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--terracotta);
+  color: var(--ivory);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600;
+  flex-shrink: 0;
+}
+.skill-item .skill-info { flex: 1; }
+.skill-item .skill-name { color: var(--ivory); font-size: 14px; font-weight: 500; }
+.skill-item .skill-cmd { color: var(--stone); font-size: 12px; font-family: var(--mono); margin-top: 2px; }
+
+/* ── Persona Card ── */
+.persona-card {
+  background: var(--ivory);
+  border: 1px solid var(--border-cream);
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 600px;
+  margin: 0 auto 48px;
+}
+.persona-header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+.persona-avatar {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: var(--terracotta);
+  color: var(--ivory);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--serif);
+  font-size: 20px; font-weight: 500;
+}
+.persona-name { font-family: var(--serif); font-size: 1.25rem; font-weight: 500; }
+.persona-tag { font-size: 13px; color: var(--stone); }
+.persona-body p { color: var(--olive); font-size: 14px; line-height: 1.65; margin-bottom: 8px; }
+
+/* ── Footer ── */
+footer {
+  padding: 48px 0;
+  text-align: center;
+  border-top: 1px solid var(--border-cream);
+}
+footer p { color: var(--stone); font-size: 14px; }
+footer a { color: var(--terracotta); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  h1 { font-size: 2.2rem; }
+  h2 { font-size: 1.6rem; }
+  section { padding: 56px 0; }
+  .hero { padding: 64px 0 48px; }
+  .stages-grid, .outputs-grid, .skill-list { grid-template-columns: 1fr; }
+  .chat-body { height: 500px; }
+  .chat-msg { max-width: 92%; }
+  nav ul { display: none; }
+  .modal { max-height: 92vh; border-radius: 16px; }
+  .modal-body { padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <div class="container">
+    <a href="#" class="logo"><span>OPC Skills</span></a>
+    <ul>
+      <li><a href="#methodology">方法论</a></li>
+      <li><a href="#case">实战案例</a></li>
+      <li><a href="#outputs">产出文档</a></li>
+      <li><a href="#install">安装使用</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <h1><span>方糖</span> OPC 技能集</h1>
+    <p><h2>《一人企业方法论》的可执行版本</h2><br/></p>
+    
+    <p class="subtitle">
+      9 个 Agent Skill 组成的完整方法论，从资源盘点到转化闭环，帮你把已有能力重新组织成一个轻资产、可验证、可复用的个人业务系统。
+    </p>
+    <div class="cta-group">
+      <a href="#case" class="btn btn-primary">查看实战案例</a>
+      <a href="#install" class="btn btn-secondary">快速安装</a>
+    </div>
+  </div>
+</section>
+
+<!-- Methodology -->
+<section id="methodology">
+  <div class="container">
+    <div class="section-header">
+      <div class="overline">Methodology</div>
+      <h2>九步建盘，从盘点到闭环</h2>
+      <p>线性阶段确保不跳步、不走弯路；触发阶段在需要时随时启用。</p>
+    </div>
+    <div class="stages-grid">
+
+      <div class="stage-card">
+        <div class="stage-num linear">00</div>
+        <h4>总编排</h4>
+        <p>判断当前阶段与用户模式，组织整体流程，管控阶段边界。每次新会话自动恢复上次进度。</p>
+        <span class="stage-tag linear">编排层</span>
+      </div>
+
+      <div class="stage-card">
+        <div class="stage-num linear">01</div>
+        <h4>资源盘点</h4>
+        <p>按经验、人群、能力、关系、渠道、资产、约束、硬性边界 8 个类别，确认你手上到底有什么。</p>
+        <span class="stage-tag linear">线性阶段</span>
+      </div>
+
+      <div class="stage-card">
+        <div class="stage-num linear">02</div>
+        <h4>利基定位</h4>
+        <p>通过"三环合一"框架发现细分市场：新杠杆 × 边界变动 × 资源匹配，用 6 维机会评分筛选。</p>
+        <span class="stage-tag linear">线性阶段</span>
+      </div>
+
+      <div class="stage-card">
+        <div class="stage-num linear">03</div>
+        <h4>价值主张</h4>
+        <p>拆解目标客群的 Jobs / Pains / Gains，生成多个价值主张版本供对比选择。</p>
+        <span class="stage-tag linear">线性阶段</span>
+      </div>
+
+      <div class="stage-card">
+        <div class="stage-num linear">04</div>
+        <h4>商业模式</h4>
+        <p>拆解 Lean Canvas 核心模块，确定收费结构与收入路径，识别最高风险假设。</p>
+        <span class="stage-tag linear">线性阶段</span>
+      </div>
+
+      <div class="stage-card">
+        <div class="stage-num linear">06</div>
+        <h4>MVP 设计</h4>
+        <p>确定最优先验证的假设、最小验证形式、成功标准与交付边界。不追求产品完整度，只追求假设验证。</p>
+        <span class="stage-tag linear">线性阶段</span>
+      </div>
+
+      <div class="stage-card">
+        <div class="stage-num linear">07</div>
+        <h4>转化闭环</h4>
+        <p>设计从触达到承接到成交的完整路径，包括渠道策略、内容触达方式和承接机制。</p>
+        <span class="stage-tag linear">线性阶段</span>
+      </div>
+
+      <div class="stage-card">
+        <div class="stage-num trigger">08</div>
+        <h4>资产沉淀</h4>
+        <p>识别运营中可沉淀的可复用成果，规划资产优先级。支持多次触发，每次带日期标记。</p>
+        <span class="stage-tag trigger">条件触发</span>
+      </div>
+
+      <div class="stage-card">
+        <div class="stage-num trigger">09</div>
+        <h4>经营复盘</h4>
+        <p>判断当前最真实的瓶颈，确认下一周期唯一优先重点。运营卡住或需要定期回顾时触发。</p>
+        <span class="stage-tag trigger">条件触发</span>
+      </div>
+
+    </div>
+    <p class="stage-flow-note">
+      <span>01 → 07</span> 线性顺序执行 &nbsp;|&nbsp; <span>08 / 09</span> 在实际运营中按需触发
+    </p>
+  </div>
+</section>
+
+<!-- Case Study: Chat -->
+<section id="case" class="dark-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="overline">Case Study</div>
+      <h2>实战案例：室内设计师林夏的建盘全过程</h2>
+      <p>29 岁，二线城市室内全案设计师，6 年从业经验。行业寒冬下从零搭建一人企业。</p>
+      <p>*案例中的客户姓名和社交ID均改用化名</p>
+    </div>
+
+    <div class="persona-card">
+      <div class="persona-header">
+        <div class="persona-avatar">夏</div>
+        <div>
+          <div class="persona-name">林夏</div>
+          <div class="persona-tag">@林夏不熬夜（室内设计版）· 室内全案设计师 · 从业 6 年</div>
+        </div>
+      </div>
+      <div class="persona-body">
+        <p>在某二线省会城市的传统装饰企业上班。房地产下行后，公司派单从每月 5-8 个骤降到 1-2 个，底薪只有三千，收入全靠提成。公司开始强迫设计师跑小区、打电销，还要无偿加班改图。</p>
+        <p>她决定用下班后的 3 小时，搭建自己的一人企业。</p>
+      </div>
+    </div>
+
+    <div class="chat-wrapper">
+      <div class="chat-header">
+        <div class="chat-header-left">
+          <div class="avatar">AI</div>
+          <div>
+            <div class="chat-title">OPC 方法论 AI</div>
+            <div class="chat-subtitle">一人企业建盘对话</div>
+          </div>
+        </div>
+        <span style="font-size:13px;color:var(--stone);">简化版实录</span>
+      </div>
+
+      <div class="chat-body" id="chatBody">
+
+        <!-- Stage 00 -->
+        <div class="chat-stage-divider" id="chat-stage-00">
+          <div class="divider-badge"><span class="num">00</span> 总编排与开局校准</div>
+        </div>
+        <div class="chat-msg ai">
+          <div class="msg-avatar">AI</div>
+          <div class="msg-bubble">
+            <div class="msg-sender">OPC 方法论 AI</div>
+            <p>你已经把自己的处境讲得很清楚了：6 年室内全案经验，懂设计、懂落地、也知道传统装企里的真实摩擦点。现在最大的压力是公司派单萎缩、收入不稳定。</p>
+            <p>这些都不是"没能力"，而是行业结构变了。我们接下来要做的，是把你已有能力重新组织成适合一人公司的版本。</p>
+            <p>先确认一下——你对 OPC 相关方法论的熟悉度？</p>
+          </div>
+        </div>
+        <div class="chat-msg user">
+          <div class="msg-avatar">夏</div>
+          <div class="msg-bubble">
+            <div class="msg-sender">林夏</div>
+            <p>大部分熟悉，想快一点推进。</p>
+          </div>
+        </div>
+        <div class="chat-msg ai">
+          <div class="msg-avatar">AI</div>
+          <div class="msg-bubble">
+            <div class="msg-sender">OPC 方法论 AI</div>
+            <p>已设为<strong>直通模式</strong>，术语按需解释。进入 01 资源盘点。</p>
+            <div class="msg-output-badge" onclick="openModal('session-summary')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              查看会话摘要
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage 01 -->
+        <div class="chat-stage-divider" id="chat-stage-01">
+          <div class="divider-badge"><span class="num">01</span> 资源盘点</div>
+        </div>
+        <div class="chat-msg ai">
+          <div class="msg-avatar">AI</div>
+          <div class="msg-bubble">
+            <div class="msg-sender">OPC 方法论 AI</div>
+            <p>先做粗扫——你手上有哪些<strong>渠道资源</strong>可以直接动用？</p>
+          </div>
+        </div>
+        <div class="chat-msg user">
+          <div class="msg-avatar">夏</div>
+          <div class="msg-bubble">
+            <div class="msg-sender">林夏</div>
+            <ul>
+              <li><strong>小红书</strong> @林夏不熬夜，粉丝不到 800，断续发过工地实录</li>
+              <li><strong>朋友圈</strong> 2300+ 好友，平时发实景图，点赞的多是老客户和材料商</li>
+              <li><strong>私域</strong> 50+ 深度服务老客户，200+ 沉睡咨询客户</li>
+              <li><strong>社群</strong> 3 个业主群，20+ 个行业/供应链群</li>
+              <li>好好住/一兜糖有旧账号，基本长草了</li>
+            </ul>
+          </div>
+        </div>
+        <div class="chat-msg ai">
+          <div class="msg-avatar">AI</div>
+          <div class="msg-bubble">
+            <div class="msg-sender">OPC 方法论 AI</div>
+            <p>渠道记录完毕。下一问进入<strong>关系资源</strong>——你能直接联系、如果开口最可能帮到你的是哪几类人？</p>
+          </div>
+        </div>
+        <div class="chat-msg user">
+          <div class="msg-avatar">夏</div>
+          <div class="msg-bubble">
+            <div class="msg-sender">林夏</div>
+            <ul>
+              <li><strong>高信任老客户 5-8 个</strong>：能转介绍、提供实景拍摄场地和口碑背书</li>
+              <li><strong>铁的工长 2-3 个</strong>：能落地施工、反向推单</li>
+              <li><strong>材料商</strong>：能给极致底价、门店散客拦截</li>
+              <li><strong>房产中介/验房师</strong>：处在装修需求最上游</li>
+              <li><strong>前同事 2 个</strong>：可分担画图或互相飞单</li>
+            </ul>
+          </div>
+        </div>
+        <div class="chat-msg ai">
+          <div class="msg-avatar">AI</div>
+          <div class="msg-bubble">
+            <div class="msg-sender">OPC 方法论 AI</div>
+            <p>继续粗扫——你手上有哪些<strong>可直接复用的资产</strong>？</p>
+          </div>
+        </div>
+        <div class="chat-msg user">
+          <div class="msg-avatar">夏</div>
+          <div class="msg-bubble">
+            <div class="msg-sender">林夏</div>
+            <ul>
+              <li><strong>案例</strong>：12-15 套高清实景 + 30 套施工前后对比</li>
+              <li><strong>模板</strong>：大量 CAD 图库、3-4 套报价清单模板、20+ 套 PPT 提案</li>
+              <li><strong>选品</strong>：本地避坑清单 + 淘宝/1688 源头店表格</li>
+              <li><strong>内容原料</strong>：几百段工地视频、上百张高频问题截图（未整理）</li>
+            </ul>
+          </div>
+        </div>
+        <div class="chat-msg ai">
+          <div class="msg-avatar">AI</div>
+          <div class="msg-bubble">
+            <div class="msg-sender">OPC 方法论 AI</div>
+            <p>进入<strong>约束与硬性边界</strong>——你最硬的现实约束是什么？</p>
+          </div>
+        </div>
+        <div class="chat-msg user">
+          <div class="msg-avatar">夏</div>
+          <div class="msg-bubble">
+            <div class="msg-sender">林夏</div>
+            <p><strong>绝对不能裸辞</strong>：存款只够撑 4-5 个月，社保不能断，初期只能副业。</p>
+            <p><strong>时间极度碎片</strong>：工作日晚 9-12 点 + 周末 1 天。白天被公司事务榨干精力后，晚上脑力切换是最大障碍。</p>
+            <p><strong>硬性边界</strong>：不碰公司准客户、不垫资、不接传统全包私单、不接白嫖客户。</p>
+          </div>
+        </div>
+        <div class="chat-msg ai">
+          <div class="msg-avatar">AI</div>
+          <div class="msg-bubble">
+            <div class="msg-sender">OPC 方法论 AI</div>
+            <p>资源盘点完成。8 类资源已全部记录。</p>
+            <div class="msg-output-badge" onclick="openModal('inventory')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              查看资源清单
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage 02 -->
+        <div class="chat-stage-divider" id="chat-stage-02">
+          <div class="divider-badge"><span class="num">02</span> 利基定位</div>
+        </div>
+        <div class="chat-msg ai">
+          <div class="msg-avatar">AI</div>
+          <div class="msg-bubble">
+            <div class="msg-sender">OPC 方法论 AI</div>
+            <p>基于你的资源和当前市场边界变动，我通过三环分析识别出 <strong>3 个候选利基</strong>：</p>
+            <ul>
+              <li><strong>A. 报价防坑陪跑</strong> — 帮客户看穿报价套路（28/30 分）</li>
+              <li><strong>B. 自装/清包翻车救火</strong> — 非标急救（24/30 分）</li>
+              <li><strong>C. 预算内高颜值平替设计</strong> — 平替落地（24/30 分）</li>
+            </ul>
+            <p>推荐 A + C 组合：前端用防坑切入，后端承接平替设计。你的判断？</p>
+          </div>
+        </div>
+        <div class="chat-msg user">
+          <div class="msg-avatar">夏</div>
+          <div class="msg-bubble">
+            <div class="msg-sender">林夏</div>
+            <p>A + C 确实更适合我——翻车救火太不可控了，副业阶段扛不住。同意这个组合。</p>
+          </div>
+        </div>
+        <div class="chat-msg ai">
+          <div class="msg-avatar">AI</div>
+          <div class="msg-bubble">
+            <div class="msg-sender">OPC 方法论 AI</div>
+            <p>利基定位确认：前端<strong>"报价防坑陪跑"</strong>+ 后端<strong>"预算内高颜值平替设计"</strong>。</p>
+            <div class="msg-output-badge" onclick="openModal('positioning')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              查看定位陈述
+            </div>
+            <div class="msg-output-badge" onclick="openModal('candidates')" style="margin-left:4px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              查看候选利基评分
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage 03 -->
+        <div class="chat-stage-divider" id="chat-stage-03">
+          <div class="divider-badge"><span class="num">03</span> 价值主张</div>
+        </div>
+        <div class="chat-msg ai">
+          <div class="msg-avatar">AI</div>
+          <div class="msg-bubble">
+            <div class="msg-sender">OPC 方法论 AI</div>
+            <p>基于确认的利基，我拆解出 3 个价值主张候选版本：</p>
+            <ul>
+              <li><strong>降风险型</strong>：帮看穿报价套路、识别增项陷阱</li>
+              <li><strong>结果型</strong>：用平替方案把网图效果真实落地</li>
+              <li><strong>双核心型</strong>：先守预算安全，再把省下的钱花到最出效果的地方</li>
+            </ul>
+            <p>你更倾向哪个？</p>
+          </div>
+        </div>
+        <div class="chat-msg user">
+          <div class="msg-avatar">夏</div>
+          <div class="msg-bubble">
+            <div class="msg-sender">林夏</div>
+            <p>双核心型。只做降风险容易变成低价审单服务，只做结果型容易卷进独立设计师红海。两个合一才有壁垒。</p>
+          </div>
+        </div>
+        <div class="chat-msg ai">
+          <div class="msg-avatar">AI</div>
+          <div class="msg-bubble">
+            <div class="msg-sender">OPC 方法论 AI</div>
+            <p>价值主张确认：<strong>双核心型</strong>——先防坑守预算建立信任，再承接高颜值平替轻设计。</p>
+            <div class="msg-output-badge" onclick="openModal('messaging')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              查看价值主张
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage 04 -->
+        <div class="chat-stage-divider" id="chat-stage-04">
+          <div class="divider-badge"><span class="num">04</span> 商业模式</div>
+        </div>
+        <div class="chat-msg ai">
+          <div class="msg-avatar">AI</div>
+          <div class="msg-bubble">
+            <div class="msg-sender">OPC 方法论 AI</div>
+            <p>Lean Canvas 拆解完成。核心结构：</p>
+            <ul>
+              <li><strong>前端</strong>：报价体检 / 防坑报告（低门槛成交）</li>
+              <li><strong>后端 A</strong>：预算内高颜值平替设计包</li>
+              <li><strong>后端 B</strong>：节点排雷包 / 施工交底图</li>
+              <li><strong>渠道</strong>：微信私域暗线 + 小红书明线</li>
+            </ul>
+            <p><strong>最高风险假设</strong>：后端交付能否真正标准化，而不把你拖回"用命换钱"。</p>
+          </div>
+        </div>
+        <div class="chat-msg user">
+          <div class="msg-avatar">夏</div>
+          <div class="msg-bubble">
+            <div class="msg-sender">林夏</div>
+            <p>这个风险确实是我最担心的。确认这个商模方向，先跑通再说。</p>
+          </div>
+        </div>
+        <div class="chat-msg ai">
+          <div class="msg-avatar">AI</div>
+          <div class="msg-bubble">
+            <div class="msg-sender">OPC 方法论 AI</div>
+            <p>商业模式确认：<strong>阶梯盈利型</strong>。</p>
+            <div class="msg-output-badge" onclick="openModal('lean-canvas')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              查看 Lean Canvas
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage 06 -->
+        <div class="chat-stage-divider" id="chat-stage-06">
+          <div class="divider-badge"><span class="num">06</span> MVP 设计</div>
+        </div>
+        <div class="chat-msg ai">
+          <div class="msg-avatar">AI</div>
+          <div class="msg-bubble">
+            <div class="msg-sender">OPC 方法论 AI</div>
+            <p>MVP 方案：采用<strong>混合版验证</strong>——</p>
+            <ul>
+              <li><strong>第 1 单（校准）</strong>：高信任老客户，目标查漏补缺</li>
+              <li><strong>第 2-3 单（验证）</strong>：真实付费客户，严格执行标准包 + 2 次答疑</li>
+            </ul>
+            <p><strong>成功标准</strong>：单客耗时 ≤ 3h、至少拒绝 1 次非标需求且客户仍认可、晚 12 点前收工。</p>
+          </div>
+        </div>
+        <div class="chat-msg user">
+          <div class="msg-avatar">夏</div>
+          <div class="msg-bubble">
+            <div class="msg-sender">林夏</div>
+            <p>这个设计把我最怕的"滑回定制苦力"风险锁死了。确认。</p>
+          </div>
+        </div>
+        <div class="chat-msg ai">
+          <div class="msg-avatar">AI</div>
+          <div class="msg-bubble">
+            <div class="msg-sender">OPC 方法论 AI</div>
+            <p>MVP 设计确认。</p>
+            <div class="msg-output-badge" onclick="openModal('mvp-spec')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              查看 MVP 方案
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage 07 -->
+        <div class="chat-stage-divider" id="chat-stage-07">
+          <div class="divider-badge"><span class="num">07</span> 转化闭环</div>
+        </div>
+        <div class="chat-msg ai">
+          <div class="msg-avatar">AI</div>
+          <div class="msg-bubble">
+            <div class="msg-sender">OPC 方法论 AI</div>
+            <p>转化路径设计：<strong>双路径并行，主私域、辅小红书</strong>。</p>
+            <p><strong>私域主路径</strong>：定向触达 → 填表单 → 极简初判（2 分钟）→ 报价体检成交 → 承接后端包</p>
+            <p><strong>小红书辅路径</strong>：硬核拆解内容 → 产生焦虑 → 进入表单 → 后续同上</p>
+            <p>关键设计：用表单承接而非直接私聊，同时过滤白嫖和预收集信息。</p>
+          </div>
+        </div>
+        <div class="chat-msg user">
+          <div class="msg-avatar">夏</div>
+          <div class="msg-bubble">
+            <div class="msg-sender">林夏</div>
+            <p>表单承接这个思路太好了——以前被私聊轰炸怕了。确认这条路径。</p>
+          </div>
+        </div>
+        <div class="chat-msg ai">
+          <div class="msg-avatar">AI</div>
+          <div class="msg-bubble">
+            <div class="msg-sender">OPC 方法论 AI</div>
+            <p>转化闭环确认。<strong>建盘期全部完成</strong>，下一步进入实际执行。</p>
+            <div class="msg-output-badge" onclick="openModal('conversion-path')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              查看转化路径
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /chat-body -->
+
+      <div class="chat-nav">
+        <button class="chat-nav-btn active" onclick="scrollToStage('00')">00</button>
+        <button class="chat-nav-btn" onclick="scrollToStage('01')">01</button>
+        <button class="chat-nav-btn" onclick="scrollToStage('02')">02</button>
+        <button class="chat-nav-btn" onclick="scrollToStage('03')">03</button>
+        <button class="chat-nav-btn" onclick="scrollToStage('04')">04</button>
+        <button class="chat-nav-btn" onclick="scrollToStage('06')">06</button>
+        <button class="chat-nav-btn" onclick="scrollToStage('07')">07</button>
+      </div>
+    </div><!-- /chat-wrapper -->
+
+  </div>
+</section>
+
+<!-- Outputs Section -->
+<section id="outputs">
+  <div class="container">
+    <div class="section-header">
+      <div class="overline">Deliverables</div>
+      <h2>全部产出文档</h2>
+      <p>每个阶段自动生成结构化产出，点击查看完整内容。</p>
+    </div>
+    <div class="outputs-grid">
+
+      <div class="output-card" onclick="openModal('inventory')">
+        <div class="output-card-header">
+          <div class="output-card-icon stage-01">01</div>
+          <div>
+            <h4>资源清单</h4>
+            <div class="output-stage-label">01 资源盘点</div>
+          </div>
+        </div>
+        <div class="output-card-body">
+          <p>8 类资源的完整盘点：经验、人群、能力、关系、渠道、资产、约束、硬性边界。</p>
+        </div>
+        <div class="output-card-files">
+          <span class="output-file-tag">inventory.md</span>
+          <span class="output-file-tag">scorecard.json</span>
+        </div>
+      </div>
+
+      <div class="output-card" onclick="openModal('three-ring')">
+        <div class="output-card-header">
+          <div class="output-card-icon stage-02">02</div>
+          <div>
+            <h4>三环分析</h4>
+            <div class="output-stage-label">02 利基定位</div>
+          </div>
+        </div>
+        <div class="output-card-body">
+          <p>新杠杆 × 边界变动 × 资源匹配的重叠区分析，识别最强切入点。</p>
+        </div>
+        <div class="output-card-files">
+          <span class="output-file-tag">three-ring-analysis.md</span>
+        </div>
+      </div>
+
+      <div class="output-card" onclick="openModal('candidates')">
+        <div class="output-card-header">
+          <div class="output-card-icon stage-02">02</div>
+          <div>
+            <h4>候选利基与评分</h4>
+            <div class="output-stage-label">02 利基定位</div>
+          </div>
+        </div>
+        <div class="output-card-body">
+          <p>3 个候选方向的 6 维机会评分对比，含风险点分析和最终选择。</p>
+        </div>
+        <div class="output-card-files">
+          <span class="output-file-tag">candidates.md</span>
+          <span class="output-file-tag">target-segment.json</span>
+        </div>
+      </div>
+
+      <div class="output-card" onclick="openModal('positioning')">
+        <div class="output-card-header">
+          <div class="output-card-icon stage-02">02</div>
+          <div>
+            <h4>定位陈述</h4>
+            <div class="output-stage-label">02 利基定位</div>
+          </div>
+        </div>
+        <div class="output-card-body">
+          <p>一段话说清楚：为谁、解决什么、为什么你、为什么现在。</p>
+        </div>
+        <div class="output-card-files">
+          <span class="output-file-tag">positioning-statement.md</span>
+        </div>
+      </div>
+
+      <div class="output-card" onclick="openModal('vp-canvas')">
+        <div class="output-card-header">
+          <div class="output-card-icon stage-03">03</div>
+          <div>
+            <h4>价值主张画布</h4>
+            <div class="output-stage-label">03 价值主张</div>
+          </div>
+        </div>
+        <div class="output-card-body">
+          <p>Jobs / Pains / Gains 完整拆解，以及对应的 Pain Relievers 和 Gain Creators。</p>
+        </div>
+        <div class="output-card-files">
+          <span class="output-file-tag">value-proposition-canvas.md</span>
+        </div>
+      </div>
+
+      <div class="output-card" onclick="openModal('messaging')">
+        <div class="output-card-header">
+          <div class="output-card-icon stage-03">03</div>
+          <div>
+            <h4>价值主张表述</h4>
+            <div class="output-stage-label">03 价值主张</div>
+          </div>
+        </div>
+        <div class="output-card-body">
+          <p>3 个候选版本对比，含选择原因和最终确认的双核心型表述。</p>
+        </div>
+        <div class="output-card-files">
+          <span class="output-file-tag">messaging.md</span>
+          <span class="output-file-tag">segment-vp-matrix.md</span>
+        </div>
+      </div>
+
+      <div class="output-card" onclick="openModal('lean-canvas')">
+        <div class="output-card-header">
+          <div class="output-card-icon stage-04">04</div>
+          <div>
+            <h4>Lean Canvas</h4>
+            <div class="output-stage-label">04 商业模式</div>
+          </div>
+        </div>
+        <div class="output-card-body">
+          <p>9 个 Lean Canvas 模块，含问题、方案、渠道、收入、关键指标和不公平优势。</p>
+        </div>
+        <div class="output-card-files">
+          <span class="output-file-tag">lean-canvas.md</span>
+          <span class="output-file-tag">business-model-canvas-lite.md</span>
+        </div>
+      </div>
+
+      <div class="output-card" onclick="openModal('risky-assumptions')">
+        <div class="output-card-header">
+          <div class="output-card-icon stage-04">04</div>
+          <div>
+            <h4>高风险假设</h4>
+            <div class="output-stage-label">04 商业模式</div>
+          </div>
+        </div>
+        <div class="output-card-body">
+          <p>需要优先验证的核心假设清单，是 MVP 阶段的验证目标来源。</p>
+        </div>
+        <div class="output-card-files">
+          <span class="output-file-tag">risky-assumptions.md</span>
+          <span class="output-file-tag">pricing-notes.md</span>
+        </div>
+      </div>
+
+      <div class="output-card" onclick="openModal('mvp-spec')">
+        <div class="output-card-header">
+          <div class="output-card-icon stage-06">06</div>
+          <div>
+            <h4>MVP 方案</h4>
+            <div class="output-stage-label">06 MVP 设计</div>
+          </div>
+        </div>
+        <div class="output-card-body">
+          <p>混合版验证路径：1 单校准 + 2 单真实验证，含成功标准和交付边界。</p>
+        </div>
+        <div class="output-card-files">
+          <span class="output-file-tag">mvp-spec.md</span>
+          <span class="output-file-tag">experiment-plan.md</span>
+          <span class="output-file-tag">human-ai-split.md</span>
+        </div>
+      </div>
+
+      <div class="output-card" onclick="openModal('conversion-path')">
+        <div class="output-card-header">
+          <div class="output-card-icon stage-07">07</div>
+          <div>
+            <h4>转化路径</h4>
+            <div class="output-stage-label">07 转化闭环</div>
+          </div>
+        </div>
+        <div class="output-card-body">
+          <p>私域主路径 + 小红书辅路径的完整转化闭环，含表单承接和成交机制。</p>
+        </div>
+        <div class="output-card-files">
+          <span class="output-file-tag">conversion-path.md</span>
+          <span class="output-file-tag">channel-strategy.md</span>
+          <span class="output-file-tag">content-plan.md</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Install Section -->
+<section id="install" class="dark-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="overline">Get Started</div>
+      <h2>安装与使用</h2>
+      <p>在支持 Skill 的软件中一键安装，即刻开始搭建你的一人企业。</p>
+    </div>
+
+    <div class="install-block">
+      <h4>第一步：安装全部 Skill</h4>
+      <p>在终端中执行以下命令，安装所有 OPC 方法论 Skill：</p>
+      <div class="code-block">
+<span class="comment"># 安装 OPC 总编排（必装，负责流程管控）</span>
+<span class="cmd">npx skills add https://github.com/easychen/opc-methodology/skills/opc-orchestrator</span>
+
+<span class="comment"># 安装各阶段 Skill</span>
+<span class="cmd">npx skills add https://github.com/easychen/opc-methodology/skills/opc-resource-audit</span>
+<span class="cmd">npx skills add https://github.com/easychen/opc-methodology/skills/opc-niche-positioning</span>
+<span class="cmd">npx skills add https://github.com/easychen/opc-methodology/skills/opc-value-proposition</span>
+<span class="cmd">npx skills add https://github.com/easychen/opc-methodology/skills/opc-business-model-design</span>
+<span class="cmd">npx skills add https://github.com/easychen/opc-methodology/skills/opc-mvp-designer</span>
+<span class="cmd">npx skills add https://github.com/easychen/opc-methodology/skills/opc-conversion-loop</span>
+<span class="cmd">npx skills add https://github.com/easychen/opc-methodology/skills/opc-asset-ops</span>
+<span class="cmd">npx skills add https://github.com/easychen/opc-methodology/skills/opc-dashboard-review</span>
+      </div>
+    </div>
+
+    <div class="install-block">
+      <h4>第二步：启动方法论</h4>
+      <p>安装完成后，用总编排 Skill 启动你的一人企业建盘流程：</p>
+      <div class="code-block">
+<span class="comment"># 在对话中输入：</span>
+<span class="cmd">/opc-orchestrator</span>
+
+<span class="comment"># 然后告诉 AI 你的背景和当前处境</span>
+<span class="comment"># AI 会自动判断你的模式，从 01 资源盘点开始引导你</span>
+      </div>
+    </div>
+
+    <div class="install-block">
+      <h4>全部 Skill 一览</h4>
+      <div class="skill-list">
+        <div class="skill-item">
+          <div class="skill-num">00</div>
+          <div class="skill-info">
+            <div class="skill-name">总编排</div>
+            <div class="skill-cmd">/opc-orchestrator</div>
+          </div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-num">01</div>
+          <div class="skill-info">
+            <div class="skill-name">资源盘点</div>
+            <div class="skill-cmd">/opc-resource-audit</div>
+          </div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-num">02</div>
+          <div class="skill-info">
+            <div class="skill-name">利基定位</div>
+            <div class="skill-cmd">/opc-niche-positioning</div>
+          </div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-num">03</div>
+          <div class="skill-info">
+            <div class="skill-name">价值主张</div>
+            <div class="skill-cmd">/opc-value-proposition</div>
+          </div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-num">04</div>
+          <div class="skill-info">
+            <div class="skill-name">商业模式设计</div>
+            <div class="skill-cmd">/opc-business-model-design</div>
+          </div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-num">06</div>
+          <div class="skill-info">
+            <div class="skill-name">MVP 设计</div>
+            <div class="skill-cmd">/opc-mvp-designer</div>
+          </div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-num">07</div>
+          <div class="skill-info">
+            <div class="skill-name">转化闭环</div>
+            <div class="skill-cmd">/opc-conversion-loop</div>
+          </div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-num">08</div>
+          <div class="skill-info">
+            <div class="skill-name">资产沉淀</div>
+            <div class="skill-cmd">/opc-asset-ops</div>
+          </div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-num">09</div>
+          <div class="skill-info">
+            <div class="skill-name">经营复盘</div>
+            <div class="skill-cmd">/opc-dashboard-review</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <p>OPC 一人企业方法论<sup>exe</sup> · 基于 <a href="https://github.com/easychen/opc-methodology" target="_blank">一人企业方法论³</a> 构建</p>
+  </div>
+</footer>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h3 id="modalTitle">文档标题</h3>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="md-content" id="modalContent"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Document contents ──
+const docs = {
+  'session-summary': {
+    title: '会话摘要',
+    content: `<h1>Session Summary</h1>
+<h2>2026-04-11</h2>
+<ul>
+<li>新会话开始，未发现既有 opc-doc/ 记录。</li>
+<li><strong>用户背景</strong>：29 岁，二线/新一线省会城市室内全案设计师，从业 6 年，供职于传统装饰企业，行业下行导致派单与收入明显下滑。</li>
+<li>已确认协作方式：<strong>直通模式</strong>。</li>
+<li>已确认术语偏好：默认不解释，用户主动询问时再解释。</li>
+<li>用户已确认 01-resource-audit 资源清单，包含 8 类资源、主要约束与硬性边界。</li>
+<li>用户已确认 02-niche-positioning：以前端"报价防坑陪跑"切入，并以后端"预算内高颜值平替设计"形成组合利基。</li>
+<li>用户已确认 03-value-proposition：采用"双核心型"价值主张，先防坑守预算，再做高颜值平替落地。</li>
+<li>用户已确认 04-business-model：采用阶梯盈利型商模，前端报价体检切入，后端以平替设计包和节点排雷包承接收入。</li>
+<li>已记录最高风险假设：后端交付若不能标准化，将重新滑回"用命换钱"。</li>
+<li>用户已确认 06-mvp-design：采用混合版 MVP，先用 1 单校准，再用 2 单真实付费客户验证后端标准化边界。</li>
+<li>用户已确认 07-conversion-loop：主私域、辅小红书，先表单提报，再极简初判，随后成交报价体检并承接后端产品。</li>
+<li><strong>建盘期已完成</strong>，下一步进入实际执行阶段。</li>
+</ul>`
+  },
+  'inventory': {
+    title: '资源清单',
+    content: `<h1>资源清单</h1>
+<p>确认日期：2026-04-11</p>
+<h2>1. 经验资源</h2>
+<ul>
+<li>6 年室内全案设计经验，长期在传统装企一线工作。</li>
+<li>反复处理过 20+ 个装修烂摊子 / 半途翻车项目，具备现场排错、修补和救火经验。</li>
+<li>深度参与并摸透传统装企的报价、逼单、增项套路，能快速识别报价单里的风险点和行业潜规则。</li>
+</ul>
+<h2>2. 人群资源</h2>
+<ul>
+<li>最懂预算紧但审美要求高的年轻刚需族，尤其是受小红书风格影响很深的人群。</li>
+<li>很懂怕踩坑、没时间盯工地、缺少掌控感的 996 上班族。</li>
+<li>很懂自装 / 清包过程中翻车、带着具体问题来求救的人。</li>
+</ul>
+<h2>3. 能力资源</h2>
+<ul>
+<li>擅长把"小红书网图"拆解成预算内可落地的平替方案。</li>
+<li>擅长刚需小户型 / 怪户型的空间拆解、动线重组和收纳优化。</li>
+<li>擅长施工前置排雷与极简风格的节点细化，图纸可直接指导工长落地。</li>
+</ul>
+<h2>4. 关系资源</h2>
+<ul>
+<li>有 5-8 个高信任老客户，可提供转介绍、案例拍摄场地和口碑背书。</li>
+<li>有 2-3 个长期合作、互相兜底的工长 / 施工队长，可提供落地支持和反向推单。</li>
+<li>与本地材料商关系熟，可获得价格支持、样板支持和门店散客线索。</li>
+<li>认识 3-4 个房产中介和 1 个验房师，处于装修需求较前端的位置。</li>
+<li>有 2 个高信任前同事 / 同行，可协作分担产能或互相飞单。</li>
+</ul>
+<h2>5. 渠道资源</h2>
+<ul>
+<li>小红书账号 @林夏不熬夜（室内设计版），粉丝不足 800，已有工地实录和软装内容基础。</li>
+<li>微信约 2300+ 好友，朋友圈互动稳定，是目前最稳的触达盘。</li>
+<li>私域里有 50+ 深度服务老客户，200+ 沉睡咨询客户。</li>
+<li>手里有 3 个已交付小区业主群，以及 20+ 个同行 / 供应链群。</li>
+<li>好好住、一兜糖等平台有旧账号和作品沉淀，但目前低活跃。</li>
+</ul>
+<h2>6. 资产资源</h2>
+<ul>
+<li>有 12-15 套可展示的高质量实景案例，30+ 套真实施工前后对比素材。</li>
+<li>拥有大体量 CAD 模板 / 图库、节点图、框架模板。</li>
+<li>有 3-4 套成熟报价单与材料清单模板，20+ 套提案 PPT 模板。</li>
+<li>有本地建材避坑经验清单，以及一份较大的线上软装源头店表格。</li>
+<li>有几百段工地原始视频、上百张客户高频问题截图、若干交底与避坑文档，但尚未整理。</li>
+</ul>
+<h2>7. 约束资源</h2>
+<ul>
+<li>短期绝对不能裸辞，存款仅能覆盖约 4-5 个月日常开销与房租，社保不能断。</li>
+<li>一人公司初期只能作为副业存在，且不能公开与公司现有业务冲突。</li>
+<li>稳定可支配时间主要是工作日晚 21:00-24:00，外加周末约 1 天。</li>
+<li>晚间精力受白天公司事务严重消耗，内容创作和自主经营的脑力切换成本很高。</li>
+</ul>
+<h2>8. 硬性边界</h2>
+<ul>
+<li>绝不撬公司现有准客户，不碰公司池子里的客户。</li>
+<li>绝不垫资，必须前置收费或按节点严格付款。</li>
+<li>绝不接需要深度盯工地的传统全包私单。</li>
+<li>绝不接无底线比价、白嫖型客户。</li>
+</ul>`
+  },
+  'three-ring': {
+    title: '三环分析',
+    content: `<h1>三环分析</h1>
+<p>确认日期：2026-04-11</p>
+<h2>环1：新杠杆 / 元杠杆</h2>
+<p>可复用、可标准化、适合一人公司副业阶段的输出主要包括：</p>
+<ul>
+<li><strong>审报价 / 查增项</strong>：可标准化为"防坑体检报告"</li>
+<li><strong>预算内高颜值平替</strong>：可标准化为"模块化选品包 / 风格平替包"</li>
+<li><strong>极简工艺节点排雷</strong>：可标准化为"节点图包 / 施工交底图"</li>
+</ul>
+<p>这些输出都能通过模板、表格、图库和固定流程重复交付，交付对现场依赖低，适合晚间碎片时间完成。</p>
+<h2>环2：边界变动</h2>
+<h3>1. 信息差崩盘</h3>
+<ul>
+<li>客户从"纯小白"变成"小红书十级学者"</li>
+<li>传统装企依赖信息不透明和建材不透明的旧优势迅速削弱</li>
+</ul>
+<h3>2. 信任从公司转向个人</h3>
+<ul>
+<li>本地装企暴雷、跑路、增项等案例增多</li>
+<li>客户更愿意相信真实、透明、持续输出具体过程的个人从业者</li>
+</ul>
+<h3>3. 装修开始被拆解购买</h3>
+<ul>
+<li>用户开始愿意为审报价、防踩坑、纯设计和陪跑类脑力服务单独付费</li>
+</ul>
+<h2>环3：资源叠加</h2>
+<ul>
+<li>熟悉传统装企报价、增项和逼单套路，能快速识别陷阱</li>
+<li>拥有报价模板、成本底表、案例、图库与节点图库</li>
+<li>能在预算有限情况下做出风格平替与效果保留</li>
+<li>对年轻刚需、怕踩坑上班族有长期高频接触和深刻理解</li>
+<li>渠道上已有微信私域、朋友圈、小红书和老客户信任基础</li>
+</ul>
+<h2>三环重叠区</h2>
+<p>最强重叠区不是"完整装修服务"，而是：</p>
+<ol>
+<li>先以<strong>"报价防坑陪跑"</strong>切入，解决客户最强烈、最立即的防御型痛点</li>
+<li>再承接为<strong>"预算内高颜值平替设计"</strong>这类轻交付后端服务</li>
+</ol>`
+  },
+  'candidates': {
+    title: '候选利基与机会评分',
+    content: `<h1>候选利基与机会评分</h1>
+<p>确认日期：2026-04-11</p>
+<h2>候选利基 A：报价防坑陪跑</h2>
+<ul>
+<li><strong>目标用户</strong>：准备装修、正在比价、对装企报价不放心的年轻业主</li>
+<li><strong>核心痛点</strong>：看不懂报价单，怕被漏项、增项、材料替换坑钱</li>
+<li><strong>三环激活</strong>：环1 ✅ | 环2 ✅ | 环3 ✅</li>
+</ul>
+<table>
+<tr><th>维度</th><th>得分</th></tr>
+<tr><td>痛点强度</td><td>5</td></tr>
+<tr><td>杠杆密度</td><td>4</td></tr>
+<tr><td>窗口红利</td><td>5</td></tr>
+<tr><td>资源匹配</td><td>5</td></tr>
+<tr><td>交付标准化</td><td>5</td></tr>
+<tr><td>现金流潜力</td><td>4</td></tr>
+<tr><td><strong>总分</strong></td><td><strong>28/30</strong></td></tr>
+</table>
+<hr>
+<h2>候选利基 B：自装 / 清包翻车救火</h2>
+<ul>
+<li><strong>目标用户</strong>：已经自己开工、过程中翻车、急需专业人拉回正轨的人</li>
+<li><strong>核心痛点</strong>：现场已经出错，不知道如何补救</li>
+<li><strong>风险点</strong>：非标程度高，容易滑向高消耗定制服务</li>
+</ul>
+<table>
+<tr><th>维度</th><th>得分</th></tr>
+<tr><td>痛点强度</td><td>5</td></tr>
+<tr><td>杠杆密度</td><td>3</td></tr>
+<tr><td>窗口红利</td><td>4</td></tr>
+<tr><td>资源匹配</td><td>5</td></tr>
+<tr><td>交付标准化</td><td>3</td></tr>
+<tr><td>现金流潜力</td><td>4</td></tr>
+<tr><td><strong>总分</strong></td><td><strong>24/30</strong></td></tr>
+</table>
+<hr>
+<h2>候选利基 C：预算内高颜值平替设计</h2>
+<ul>
+<li><strong>目标用户</strong>：预算有限但强烈想要网红审美效果的年轻刚需业主</li>
+<li><strong>核心痛点</strong>：想要好看，但买不起参考图里的材料和完整方案</li>
+</ul>
+<table>
+<tr><th>维度</th><th>得分</th></tr>
+<tr><td>痛点强度</td><td>4</td></tr>
+<tr><td>杠杆密度</td><td>4</td></tr>
+<tr><td>窗口红利</td><td>4</td></tr>
+<tr><td>资源匹配</td><td>5</td></tr>
+<tr><td>交付标准化</td><td>4</td></tr>
+<tr><td>现金流潜力</td><td>3</td></tr>
+<tr><td><strong>总分</strong></td><td><strong>24/30</strong></td></tr>
+</table>
+<hr>
+<h2>最终确认：A + C 组合</h2>
+<ul>
+<li>以"报价防坑陪跑"作为前端切入点和信任建立环节</li>
+<li>以后端"预算内高颜值平替设计"作为轻交付升级服务</li>
+<li>不选择"翻车救火"作为主利基——高非标、高情绪消耗，触碰重交付边界</li>
+</ul>`
+  },
+  'positioning': {
+    title: '定位陈述',
+    content: `<h1>定位陈述</h1>
+<p><strong>我服务的是</strong>：准备装修、正在比价、预算有限但审美要求高、又对装企套路高度警惕的年轻刚需业主。</p>
+<p><strong>我先帮他们解决的是</strong>：在装修开始前看穿报价单、识别增项和信息差，尽量少花冤枉钱，先把钱包守住。</p>
+<p><strong>在建立信任后</strong>，我再帮助他们把省下来的预算花在真正出效果的地方，用预算内可落地的平替方案做出接近理想参考图的效果。</p>
+<p><strong>我之所以能做这件事</strong>，不只是因为我会设计，而是因为我长期在传统装企一线工作，既懂客户想要什么，也看透了行业里最常见的报价套路、增项方式和落地翻车点。</p>
+<p><strong>现在是合适的时机</strong>，因为客户对大装企的信任在下降，却越来越愿意为透明、防坑、真实、轻量的个人专业服务买单。</p>`
+  },
+  'vp-canvas': {
+    title: '价值主张画布',
+    content: `<h1>Value Proposition Canvas</h1>
+<p>确认日期：2026-04-11</p>
+<h2>Customer Jobs</h2>
+<ol>
+<li>拿到一张挤干水分、能安全签约的底牌，不当大冤种。</li>
+<li>用有限预算尽量落地接近参考图的高级感效果。</li>
+<li>花钱买一个专业外脑，在关键节点减少决策负担与精神内耗。</li>
+</ol>
+<h2>Pains</h2>
+<ol>
+<li>恐惧恶意增项，预算一旦失控就会被沉没成本绑架。</li>
+<li>害怕网图效果无法落地，最终变成花了钱却难看的家。</li>
+<li>在施工方和商家面前处于信息弱势，缺少判断力和掌控感。</li>
+</ol>
+<h2>Gains</h2>
+<ol>
+<li>守住预算边界，确认每一分钱都花在明面上，不交智商税。</li>
+<li>用平替方案实现高还原度落地，得到可被认可的审美效果。</li>
+<li>在关键节点有专业依据和底气，真正获得作为甲方的掌控感。</li>
+</ol>
+<hr>
+<h2>Products / Services</h2>
+<ul>
+<li>报价防坑陪跑</li>
+<li>报价单体检与增项识别</li>
+<li>预算内高颜值平替设计</li>
+<li>模块化选品包 / 风格平替包</li>
+<li>节点排雷包 / 施工交底图</li>
+</ul>
+<h2>Pain Relievers</h2>
+<ul>
+<li>用行业底表和实战经验识别报价中的漏项、虚高和后期增项风险。</li>
+<li>在签约前帮助客户看清哪些钱该花、哪些钱不该花。</li>
+<li>用成熟节点图库和落地经验降低"网图翻车"和施工扯皮的概率。</li>
+<li>在关键节点提供明确判断，减少客户在工地上的无力感和信息弱势。</li>
+</ul>
+<h2>Gain Creators</h2>
+<ul>
+<li>先帮客户省下不必要的预算，再把预算集中投入最出效果的位置。</li>
+<li>用平替材料、标准化选品和可执行做法，尽量接近理想参考图。</li>
+<li>让客户在装修过程中感到"有人站在我这边"，并能更从容地做决定。</li>
+</ul>
+<hr>
+<h2>确认的主价值主张</h2>
+<p>帮助对装企套路高度警惕、预算有限但审美要求高的年轻刚需业主，先守住预算和签约安全，再把省下来的钱花到最出效果的地方，用更聪明的平替方案做出真正能住、能晒、能落地的家。</p>`
+  },
+  'messaging': {
+    title: '价值主张表述',
+    content: `<h1>主价值主张表述</h1>
+<p>确认日期：2026-04-11</p>
+<h2>版本候选</h2>
+<h3>1. 降风险型</h3>
+<p>帮助年轻刚需业主在装修开始前看穿报价套路、识别增项陷阱，并在关键节点提供专业判断，让他们少花冤枉钱、少踩大坑、少被施工方牵着走。</p>
+<h3>2. 结果型</h3>
+<p>帮助预算有限但审美要求高的年轻业主，把网图里的高级感尽可能真实地落到自己家里，用平替方案和可执行节点守住效果，不把家装成四不像。</p>
+<h3>3. 双核心型（已确认）</h3>
+<p>帮助对装企套路高度警惕、预算有限但审美要求高的年轻刚需业主，<strong>先守住预算和签约安全，再把省下来的钱花到最出效果的地方</strong>，用更聪明的平替方案做出真正能住、能晒、能落地的家。</p>
+<h2>选择原因</h2>
+<ul>
+<li>只做降风险，容易沦为低客单价的审单服务</li>
+<li>只做结果型，容易直接卷入传统独立设计师的红海</li>
+<li><strong>双核心型更符合"前端防守 + 后端进攻"的业务闭环</strong></li>
+<li>既能用防坑建立信任，又能承接更高价值的轻设计交付</li>
+</ul>`
+  },
+  'lean-canvas': {
+    title: 'Lean Canvas',
+    content: `<h1>Lean Canvas</h1>
+<p>确认日期：2026-04-11</p>
+<h2>1. Problem</h2>
+<ul>
+<li>年轻刚需业主看不懂报价，害怕被漏项、增项和信息差坑钱。</li>
+<li>预算有限但审美要求高，害怕网图效果无法真实落地。</li>
+<li>面对施工方和商家时处于信息弱势，缺少判断力和掌控感。</li>
+</ul>
+<h2>2. Customer Segments</h2>
+<p>准备装修、正在比价、预算有限但审美要求高、对装企套路高度警惕的年轻刚需业主。重点是白天上班、时间紧张、怕踩坑、希望降低决策压力的人群。</p>
+<h2>3. Unique Value Proposition</h2>
+<p>先帮客户守住预算和签约安全，再把省下来的钱花到最出效果的地方。不是单纯审报价，也不是单纯做效果，而是同时提供"防坑能力 + 可落地平替能力"。</p>
+<h2>4. Solution</h2>
+<ul>
+<li><strong>前端入口</strong>：报价体检 / 防坑报告</li>
+<li><strong>后端产品 A</strong>：预算内高颜值平替设计包</li>
+<li><strong>后端产品 B</strong>：节点排雷包 / 施工交底图</li>
+</ul>
+<h2>5. Channels</h2>
+<ul>
+<li><strong>暗线</strong>：微信私域定向触达沉睡客户与高信任老客户</li>
+<li><strong>明线</strong>：小红书图文输出"报价拆解 / 防坑排雷"内容获取陌生精准流量</li>
+</ul>
+<h2>6. Revenue Streams</h2>
+<ul>
+<li>前端低门槛成交：报价体检 / 防坑报告</li>
+<li>后端主要收入：平替设计包、节点排雷包</li>
+<li>高信任客户可升级购买组合包</li>
+</ul>
+<h2>7. Cost Structure</h2>
+<ul>
+<li>创始人个人时间与脑力切换成本</li>
+<li>后端制图与出图外包费</li>
+<li>渠道合作、转介绍红包或佣金</li>
+</ul>
+<h2>8. Key Metrics</h2>
+<ul>
+<li>报价体检转后端包的转化率</li>
+<li>单个客户平均交付耗时</li>
+<li>老带新 / 渠道转介绍率</li>
+</ul>
+<h2>9. Unfair Advantage</h2>
+<ul>
+<li>6 年传统装企一线经验，真正懂报价、逼单和增项黑盒</li>
+<li>既懂审美平替，又懂施工落地，不是只会做飞机稿</li>
+</ul>
+<hr>
+<h2>核心商模方向（已确认）</h2>
+<p>采用<strong>"阶梯盈利型"</strong>商模：先用报价体检切入建立信任，再承接平替设计包与节点排雷包形成主要利润来源。</p>`
+  },
+  'risky-assumptions': {
+    title: '高风险假设',
+    content: `<h1>高风险假设</h1>
+<p>确认日期：2026-04-11</p>
+<h2>最高风险假设</h2>
+<h3>1. 后端交付能否真正标准化，而不把创始人拖回"用命换钱"</h3>
+<p><strong>风险描述</strong>：平替设计包和节点排雷包看似标准化，但一旦客户提出大量个性化修改，就可能重新滑向高消耗定制服务。如果前 3 单无法把交付边界和客户预期校准清楚，创始人的时间与脑力会迅速被拖垮。</p>
+<p><strong>为什么危险</strong>：创始人的最稀缺资源不是钱，而是晚间有限的 3 小时精力。一旦副业比上班更累，这个模式就会因为创始人精力崩盘而停摆。</p>
+<p><strong>优先验证方式</strong>：用前 3 单验证后端包是否能在严格边界内交付，记录单客平均耗时，记录越界请求，检查是否能稳定用模板完成主要交付。</p>
+<h2>次级风险假设</h2>
+<h3>2. 前端报价体检是否能稳定转化为后端包</h3>
+<p>如果客户只把服务当一次性低价咨询，商模利润层会变薄。</p>
+<h3>3. 小红书与私域能否持续带来足够多的精准报价体检线索</h3>
+<p>如果线索不足，整个阶梯商模无法形成稳定漏斗。</p>`
+  },
+  'mvp-spec': {
+    title: 'MVP 方案',
+    content: `<h1>MVP 方案说明</h1>
+<p>确认日期：2026-04-11</p>
+<h2>主验证目标</h2>
+<p>优先验证：<strong>后端标准化是否成立</strong>，而不是重新滑回"用命换钱"的定制服务。</p>
+<h2>核心验证问题</h2>
+<p>当客户提出非标需求时，是否能够守住轻交付边界，只交付标准资料包和有限次数答疑，同时依然让客户觉得"这钱花得值"。</p>
+<h2>选定的 MVP 路径：混合版</h2>
+<h3>第 1 单：校准单</h3>
+<ul>
+<li>选择私域中的高信任老客户或转介绍客户</li>
+<li>目标不是赚钱，而是查漏补缺</li>
+<li>用这一单补足标准资料包中的缺口，并整理常见问题 Q&A</li>
+</ul>
+<h3>第 2-3 单：真实验证单</h3>
+<ul>
+<li>选择真实付费的沉睡客户或小红书陌生咨询客户</li>
+<li>严格执行"只发标准资料包 + 约定好的 2 次线上答疑"</li>
+<li>用真实客户验证边界是否能守住</li>
+</ul>
+<h2>成功标准</h2>
+<ol>
+<li>第 2、3 单单客后端总净耗时<strong>不超过 3 小时</strong></li>
+<li>至少成功<strong>拒绝 1 次非标需求</strong>，且客户仍认可服务价值</li>
+<li>整个测试期内，基本能在<strong>晚上 12 点前</strong>结束工作</li>
+</ol>
+<h2>MVP 边界（绝不做）</h2>
+<ol>
+<li>不做任何单独开软件的定制化重绘、建模、跑图</li>
+<li>不接受实时语音轰炸或无限次拉扯</li>
+<li>不进施工群，不承担监工角色</li>
+<li>不接受超纲范围的"顺手人情"</li>
+</ol>
+<hr>
+<h2>人机分工</h2>
+<p><strong>创始人负责</strong>：用经验识别关键陷阱、判断平替逻辑、做边界决策、建立信任</p>
+<p><strong>AI / 模板辅助</strong>：标准化交付文档排版、生成拒绝话术、整理 FAQ、选品链接库</p>
+<p><strong>原则</strong>：人只做"判断"和"拍板"，AI 和模板负责"整理、包装、复用"</p>`
+  },
+  'conversion-path': {
+    title: '转化路径',
+    content: `<h1>转化路径</h1>
+<p>确认日期：2026-04-11</p>
+<h2>私域主路径</h2>
+<ol>
+<li>定向触达沉睡客户 / 老客户转介绍</li>
+<li>引导填写<strong>结构化资料表单</strong></li>
+<li>客户上传户型图、报价单、预算区间与主要诉求</li>
+<li>创始人做 <strong>2 分钟级极简初判</strong></li>
+<li>仅提示存在高风险问题，<strong>不免费给出完整解法</strong></li>
+<li>引导成交前端产品：报价体检 / 防坑报告</li>
+<li>体检完成后承接后端产品：平替设计包 / 节点排雷包 / 组合包</li>
+</ol>
+<h2>小红书辅路径</h2>
+<ol>
+<li>用户通过硬核拆解型图文内容认识创始人</li>
+<li>对"报价防坑"产生兴趣和焦虑</li>
+<li>进入结构化资料表单</li>
+<li>后续流程与私域主路径一致</li>
+</ol>
+<h2>关键承接机制</h2>
+<p>承接动作不是直接私聊，而是<strong>先填表单</strong>。目的是：</p>
+<ul>
+<li>过滤白嫖党</li>
+<li>预先收集病历信息</li>
+<li>把后续沟通变成结构化诊断，而不是情绪宣泄</li>
+</ul>
+<hr>
+<h2>渠道策略</h2>
+<p><strong>双路径并行，但主私域、辅小红书</strong></p>
+<ul>
+<li><strong>私域（暗线）</strong>：MVP 前 3 单的主要练兵场，节奏可控，风险较低</li>
+<li><strong>小红书（明线）</strong>：慢启动蓄水池，先建专业人设，后端跑通后逐步放大</li>
+</ul>
+<h2>一句话闭环</h2>
+<p>用私域和小红书触达目标客户，用表单收集结构化病历，用极简判断钩住焦虑，再用报价体检完成第一笔成交，最后承接平替设计包与节点排雷包。</p>`
+  }
+};
+
+// ── Chat navigation ──
+function scrollToStage(num) {
+  const el = document.getElementById('chat-stage-' + num);
+  if (!el) return;
+  const chatBody = document.getElementById('chatBody');
+  chatBody.scrollTo({ top: el.offsetTop - chatBody.offsetTop - 12, behavior: 'smooth' });
+  // Update active button
+  document.querySelectorAll('.chat-nav-btn').forEach(b => b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+}
+
+// Highlight active stage on scroll
+const chatBody = document.getElementById('chatBody');
+chatBody.addEventListener('scroll', () => {
+  const dividers = chatBody.querySelectorAll('.chat-stage-divider');
+  const scrollTop = chatBody.scrollTop + 40;
+  let activeId = '00';
+  dividers.forEach(d => {
+    if (d.offsetTop - chatBody.offsetTop <= scrollTop) {
+      activeId = d.id.replace('chat-stage-', '');
+    }
+  });
+  document.querySelectorAll('.chat-nav-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.trim() === activeId);
+  });
+});
+
+// ── Modal ──
+function openModal(docId) {
+  const doc = docs[docId];
+  if (!doc) return;
+  document.getElementById('modalTitle').textContent = doc.title;
+  document.getElementById('modalContent').innerHTML = doc.content;
+  document.getElementById('modalOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modalOverlay')) return;
+  document.getElementById('modalOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// ESC to close
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+</script>
+
+</body>
+</html>
