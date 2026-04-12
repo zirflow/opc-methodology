@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OPC 一人企业方法论³</title>
+<title>方糖 OPC 技能集ᵅ</title>
 <style>
 /* ── Reset & Base ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -505,6 +505,44 @@ nav a:hover { color: var(--near-black); }
 .md-content hr { border: none; border-top: 1px solid var(--border-warm); margin: 24px 0; }
 
 /* ── Install Section ── */
+.note-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: rgba(201, 100, 66, 0.15);
+  border: 1.5px solid var(--coral);
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin-bottom: 28px;
+}
+.note-alert .note-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.note-alert .note-content { flex: 1; }
+.note-alert h4 {
+  color: var(--coral);
+  margin-bottom: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.note-alert p {
+  color: var(--ivory);
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0;
+}
+.note-alert code {
+  background: rgba(201, 100, 66, 0.25);
+  color: #ffd9cc;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+}
+
 .install-block {
   background: var(--dark-surface);
   border-radius: 14px;
@@ -623,7 +661,7 @@ footer a:hover { text-decoration: underline; }
 <!-- Hero -->
 <section class="hero">
   <div class="container">
-    <h1><span>方糖</span> OPC 技能集</h1>
+    <h1><span>方糖</span> OPC 技能集 <sup>ɑ</sup></h1>
     <p><h2>《一人企业方法论》的可执行版本</h2><br/></p>
     
     <p class="subtitle">
@@ -1266,6 +1304,14 @@ footer a:hover { text-decoration: underline; }
       <p>在支持 Skill 的软件中一键安装，即刻开始搭建你的一人企业。</p>
     </div>
 
+    <div class="note-alert">
+      <div class="note-icon">⚠️</div>
+      <div class="note-content">
+        <h4>重要提示</h4>
+        <p>如果不是第一次运行，记得清空对话目录下的 <code>opc-doc</code> 目录，否则会载入上一次的数据</p>
+      </div>
+    </div>
+
     <div class="install-block">
       <h4>第一步：安装全部 Skill</h4>
       <p>在终端中执行以下命令，安装所有 OPC 方法论 Skill：</p>
@@ -1289,12 +1335,24 @@ footer a:hover { text-decoration: underline; }
       <h4>第二步：启动方法论</h4>
       <p>安装完成后，用总编排 Skill 启动你的一人企业建盘流程：</p>
       <div class="code-block">
-<span class="comment"># 在对话中输入：</span>
+<span class="comment"># Claude Code</span>
 <span class="cmd">/opc-orchestrator</span>
+
+<span class="comment"># CodeX</span>
+<span class="cmd">@opc-orchestrator</span>
 
 <span class="comment"># 然后告诉 AI 你的背景和当前处境</span>
 <span class="comment"># AI 会自动判断你的模式，从 01 资源盘点开始引导你</span>
+
       </div>
+      <p><br>你也可以直接使用其中的某一个模块：</p>
+      <div class="code-block">
+<span class="comment"># Claude Code</span>
+<span class="cmd">/opc-niche-positioning 分析Todo 产品的利基市场</span>
+<span class="comment"># CodeX</span>
+<span class="cmd">@opc-niche-positioning 分析Todo 产品的利基市场</span>
+      </div>
+
     </div>
 
     <div class="install-block">
