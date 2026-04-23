@@ -31,7 +31,6 @@ description: Inventory all founder resources across 8 categories for a one-perso
 
 ### 不做这些（属于后续技能）
 
-- ❌ 不分析"你适合做什么方向"（属于 opc-opportunity-score）
 - ❌ 不判断"哪项资源最有价值"（属于 opc-niche-positioning）
 - ❌ 不评估偏好或风险承受力（属于后续决策阶段）
 - ❌ 不给业务建议或产品方向

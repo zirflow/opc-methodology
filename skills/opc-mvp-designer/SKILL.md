@@ -70,9 +70,8 @@ description: Define the smallest viable experiment and MVP for a selected one-pe
 优先读取：
 
 - `opc-doc/outputs/04-business-model/risky-assumptions.md`
-- `opc-doc/outputs/05-opportunity-score/selected-opportunity.json`
 
-如果依赖不完整，先建议回到 `opc-business-model-design` 或 `opc-opportunity-score`。
+如果依赖不完整，先建议回到 `opc-business-model-design`。
 
 ## 执行步骤
 

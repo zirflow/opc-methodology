@@ -130,18 +130,18 @@ description: Design a viable business model for a one-person company using Lean 
 
 **更新状态文件：**
 
-- `opc-doc/state/current-stage.json`（写入：`{"stage": "04-business-model", "status": "completed", "next_stage": "05-opportunity-score", "summary": "一句话商模核心"}`）
+- `opc-doc/state/current-stage.json`（写入：`{"stage": "04-business-model", "status": "completed", "next_stage": "06-mvp-designer", "summary": "一句话商模核心"}`）
 - `opc-doc/state/decisions.json`（追加核心商模决策）
 - `opc-doc/state/assumptions.json`（写入高风险假设列表）
 
 **落盘完成后，在对话中告知用户：**
-> "✅ 商业模式结论已保存。下次对话可以从机会评分继续。"
+> "✅ 商业模式结论已保存。下次对话可以从 MVP 设计继续。"
 
-**只有落盘完成后，才可以提示进入 `opc-opportunity-score` 或 `opc-mvp-designer`。**
+**只有落盘完成后，才可以提示进入 `opc-mvp-designer`。**
 
 ## 何时调用其他 skills
 
-只有在用户确认核心商模后，才进入 `opc-opportunity-score` 或 `opc-mvp-designer`。
+只有在用户确认核心商模后，才进入 `opc-mvp-designer`。
 
 ## 异常处理
 
